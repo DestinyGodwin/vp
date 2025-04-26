@@ -12,7 +12,7 @@ class University extends Model
     protected $fillable = [
         'name',
         'address',
-        'code',
+       
         'state',
         'country', 
     ];
