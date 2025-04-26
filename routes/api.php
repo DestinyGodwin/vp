@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\v1\StoreController;
+use App\Http\Controllers\v1\ProductController;
 use App\Http\Controllers\v1\UniversityController;
 
 Route::get('/user', function (Request $request) {
