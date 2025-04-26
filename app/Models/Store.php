@@ -12,13 +12,12 @@ class Store extends Model
 
 
     protected $fillable = [
-        'user_id',
+       'user_id',
+        'university_id',
         'name',
         'type',
-        'address',
-        'latitude',
-        'longitude',
-        'is_active',
+        'description',
+        'status',
         'next_payment_due',
     ];
     protected $casts = [
@@ -71,4 +70,13 @@ class Store extends Model
     //         ->having('distance_km', '<=', $radiusKm)
     //         ->orderBy('distance_km');
     // }
+    public function university()
+    {
+        return $this->belongsTo(University::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
