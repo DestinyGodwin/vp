@@ -26,13 +26,13 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $user = auth()->user();
-        $store = $user->store; // Automatically pick user's store
+        $store = $user->store; 
 
         if (!$store) {
             return response()->json(['message' => 'No store found for user.'], 403);
         }
 
-        $product = $store->products()->create($request->only(['name', 'description', 'price']));
+        $product = $store->products()->create($request->only(['name', 'description', 'price', 'category_id']));
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
@@ -60,7 +60,7 @@ class ProductController extends Controller
             return response()->json(['message' => 'Unauthorized.'], 403);
         }
 
-        $product->update($request->only(['name', 'description', 'price']));
+        $product->update($request->only(['name', 'description', 'price', 'category_id']));
 
         if ($request->hasFile('images')) {
             $product->images()->delete(); // Remove old images
