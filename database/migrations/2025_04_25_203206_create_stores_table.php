@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('stores', function (Blueprint $table) {
             $table->uuid('id');
-    $table->foreignId('user_id')->constrained()->onDelete('cascade');
-    $table->string('name');
-    $table->enum('type', ['product', 'food']);
-    $table->string('address');
-    $table->decimal('latitude', 10, 7)->nullable();
-    $table->decimal('longitude', 10, 7)->nullable();
-    $table->boolean('is_active')->default(true);
-    $table->timestamp('next_payment_due')->nullable();
-    $table->timestamps();
+            $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
+            $table->string('name');
+            $table->enum('type', ['product', 'food']);
+            $table->foreignUuid('university_id');
+            $table->status('description');
+            // $table->decimal('latitude', 10, 7)->nullable();
+            // $table->decimal('longitude', 10, 7)->nullable();
+            $table->timestamp('next_payment_due')->nullable();
+            $table->timestamps();
 
-    $table->index(['latitude', 'longitude']);
+            // $table->index(['latitude', 'longitude']);
         });
     }
 
