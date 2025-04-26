@@ -33,16 +33,16 @@ class WelcomeNotification extends Notification
      * Get the mail representation of the notification.
      */
     public function toMail(object $notifiable): MailMessage
-    {
-        {
+    { {
             return (new MailMessage)
-                        ->subject('Welcome to Vplaza!')
-                        ->greeting('Hello '.$notifiable->name.',')
-                        ->line('Welcome to Vplaza, the best platform for buying, selling, and ordering food around your university!')
-                        ->line('We are happy to have you onboard.')
-                        ->action('Visit Your Dashboard', url('/'))
-                        ->line('Thank you for joining us!');
+                ->subject('Welcome to Vplaza!')
+                ->greeting('Hello ' . $notifiable->name . ',')
+                ->line('Welcome to Vplaza, the best platform for buying, selling, and ordering food around your university!')
+                ->line('We are happy to have you onboard.')
+                ->action('Visit Your Dashboard', url('/'))
+                ->line('Thank you for joining us!');
         }
+    }
 
     /**
      * Get the array representation of the notification.
