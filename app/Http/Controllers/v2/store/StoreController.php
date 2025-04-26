@@ -1,14 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\v1\store;
+namespace App\Http\Controllers\v2\store;
 
 use App\Models\Store;
 use Illuminate\Http\Request;
+use App\Services\GeocodingService;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\v1\store\CreateStoreRequest;
+use App\Http\Requests\v2\store\CreateStoreRequest;
 
 class StoreController extends Controller
 {
+    protected $geocodingService;
+
+    public function __construct(GeocodingService $geocodingService)
+    {
+        $this->geocodingService = $geocodingService;
+    }
     public function index()
     {
         return Store::where('user_id', auth()->id())->get();
@@ -16,7 +23,7 @@ class StoreController extends Controller
 
     public function store(CreateStoreRequest $request)
     {
-        $geo = geocodeAddress($request->address);
+        $geo = $this->geocodingService->geocodeAddress($request->address);
 
         $store = auth()->user()->stores()->create([
             ...$request->validated(),
@@ -38,7 +45,8 @@ class StoreController extends Controller
     {
         $this->authorize('update', $store);
 
-        $geo = geocodeAddress($request->address);
+        $geo = $this->geocodingService->geocodeAddress($request->address);
+
         $store->update([
             ...$request->validated(),
             'latitude' => $geo['lat'],

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Store extends Model
 {
-    use HasUuids, HasFactory, SpatialTrait;
+    use HasUuids, HasFactory;
 
 
     protected $fillable = [
@@ -35,24 +36,24 @@ class Store extends Model
     // public function subscriptions() {
     //      return $this->hasMany(StoreSubscription::class);
     //      }
-    public function scopeNearby($query, float $lat, float $lng, float $radius = 10)
-    {
-        return $query->select('*')
-            ->selectRaw(
-                '(
-                         6371 * acos(
-                             cos(radians(?)) *
-                             cos(radians(latitude)) *
-                             cos(radians(longitude) - radians(?)) +
-                             sin(radians(?)) *
-                             sin(radians(latitude))
-                         )
-                     ) AS distance',
-                [$lat, $lng, $lat]
-            )
-            ->having('distance', '<=', $radius)
-            ->orderBy('distance');
-    }
+    // public function scopeNearby($query, float $lat, float $lng, float $radius = 10)
+    // {
+    //     return $query->select('*')
+    //         ->selectRaw(
+    //             '(
+    //                      6371 * acos(
+    //                          cos(radians(?)) *
+    //                          cos(radians(latitude)) *
+    //                          cos(radians(longitude) - radians(?)) +
+    //                          sin(radians(?)) *
+    //                          sin(radians(latitude))
+    //                      )
+    //                  ) AS distance',
+    //             [$lat, $lng, $lat]
+    //         )
+    //         ->having('distance', '<=', $radius)
+    //         ->orderBy('distance');
+    // }
 
 
 
