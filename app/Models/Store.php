@@ -28,10 +28,10 @@ class Store extends Model
     {
         return $this->hasMany(Product::class);
     }
-    public function foodItems()
-    {
-        return $this->hasMany(FoodItem::class);
-    }
+    // public function foodItems()
+    // {
+    //     return $this->hasMany(FoodItem::class);
+    // }
     // public function subscriptions() {
     //      return $this->hasMany(StoreSubscription::class);
     //      }
