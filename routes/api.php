@@ -6,6 +6,7 @@ use App\Http\Controllers\v1\StoreController;
 use App\Http\Controllers\v1\ProductController;
 use App\Http\Controllers\v1\CategoryController;
 use App\Http\Controllers\v1\UniversityController;
+use App\Http\Controllers\v1\WantedProductController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -14,5 +15,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('universities', UniversityController::class);
     Route::apiResource('stores', StoreController::class);
     Route::apiResource('categories', CategoryController::class);
-    Route::apiResource('products', ProductController::class);}
+    Route::apiResource('products', ProductController::class);
+    Route::apiResource('wanted-products', WantedProductController::class);
+
+}
 );
