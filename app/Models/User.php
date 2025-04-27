@@ -38,7 +38,8 @@ class User extends Authenticatable
         'remember_token',
         'created_at',
         'updated_at',
-        'id'
+        'id',
+        'email_verified_at'
     ];
 
     /**
@@ -51,7 +52,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'phone' => 'hashed',
+            'phone' => 'encrypted',
         ];
     }
     public function store()
