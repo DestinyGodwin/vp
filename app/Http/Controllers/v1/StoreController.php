@@ -17,7 +17,7 @@ class StoreController extends Controller
 
     public function store(CreateStoreRequest $request)
     {
-        $store = auth()->user()->stores()->create([
+        $store = auth()->user()->store()->create([
             ...$request->validated(),
             'next_payment_due' => now()->addDays(30), // 30 days free
         ]);
