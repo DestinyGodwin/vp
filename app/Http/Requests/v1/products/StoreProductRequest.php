@@ -30,4 +30,14 @@ class StoreProductRequest extends FormRequest
             'images.*' => ['required','image', 'mimes:jpeg,jpg,png,gif,webp','max:2048' ],         
         ];
     }
+    public function messages()
+{
+    return [
+        'images.required' => 'You must upload at least one product image.',
+        'images.array' => 'Images must be uploaded as an array of files.',
+        'images.*.image' => 'Each file must be a valid image.',
+        'images.*.mimes' => 'Each image must be a jpeg, jpg, png, gif, or webp file.',
+        'images.*.max' => 'Each image must not be larger than 2MB.',
+    ];
+}
 }
