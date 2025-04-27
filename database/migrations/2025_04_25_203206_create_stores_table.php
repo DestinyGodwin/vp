@@ -18,7 +18,7 @@ return new class extends Migration
             $table->enum('type', ['product', 'food']);
             $table->foreignUuid('university_id');
             $table->string('description');
-            $table->string('status');
+            $table->string('status')->default('is_active');
             // $table->decimal('latitude', 10, 7)->nullable();
             // $table->decimal('longitude', 10, 7)->nullable();
             $table->timestamp('next_payment_due')->nullable();
