@@ -24,7 +24,7 @@ class CreateStoreRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', 'in:product,food'],
-            'description' => ['nullable', 'string'],
+            'description' => ['required', 'string'],
             'university_id' => ['required', 'exists:universities,id'],
         ];
     }
