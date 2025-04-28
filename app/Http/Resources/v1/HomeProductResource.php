@@ -20,7 +20,9 @@ class HomeProductResource extends JsonResource
             'description' => $this->description,
             'price' => $this->price,
             'category' => $this->category->name ?? null,
-            'images' => $this->images->pluck('url'), 
+          'images' => $this->images->map(function ($image) {
+    return url('storage/' . $image->image_path);
+}),
             'created_at' => $this->created_at->toDateTimeString(),
         ];
     }
