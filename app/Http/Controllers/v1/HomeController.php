@@ -16,9 +16,18 @@ class HomeController extends Controller
         $this->productService = $productService;
     }
 
+    // Normal Products
     public function index(HomeProductRequest $request)
     {
-        $products = $this->productService->getHomeProducts($request->validated());
+        $products = $this->productService->getHomeProducts($request->validated(), false);
+
+        return HomeProductResource::collection($products);
+    }
+
+    // Food and Drink Products
+    public function foods(HomeProductRequest $request)
+    {
+        $products = $this->productService->getHomeProducts($request->validated(), true);
 
         return HomeProductResource::collection($products);
     }
