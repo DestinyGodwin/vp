@@ -26,6 +26,7 @@ class HomeProductRequest extends FormRequest
             'category_id' => ['nullable', 'exists:categories,id'],
             'min_price' => ['nullable', 'numeric', 'gte:0'],
             'max_price' => ['nullable', 'numeric', 'gte:0'],
+            'sort' => ['nullable', 'in:latest,price_low,price_high'],
         ];
     }
 }
