@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\v1\HomeController;
 use App\Http\Controllers\v1\StoreController;
 use App\Http\Controllers\v1\ProductController;
 use App\Http\Controllers\v1\CategoryController;
@@ -17,6 +18,7 @@ Route::apiResource('universities', UniversityController::class)->only(['index', 
 Route::apiResource('stores', StoreController::class)->only(['index', 'show']);
 Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
 Route::apiResource('products', ProductController::class)->only(['index', 'show']);
+Route::get('wp', [HomeController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('universities', UniversityController::class)->only(['store', 'update', 'destroy']);

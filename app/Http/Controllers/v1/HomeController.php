@@ -1,10 +1,10 @@
-
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\v1;
+use App\Http\Controllers\Controller;
 
 use App\Services\ProductService;
-use App\Http\Resources\HomeProductResource;
+use App\Http\Resources\v1\HomeProductResource;
 use App\Http\Requests\v1\products\HomeProductRequest;
 
 class HomeController extends Controller
