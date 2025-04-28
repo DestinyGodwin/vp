@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductService
 {
-    public function getHomeProducts(array $filters)
+    public function getHomeProducts(array $filters, bool $onlyFoods = false)
     {
         $query = Product::with(['store', 'category', 'images']);
 
@@ -15,6 +15,12 @@ class ProductService
             $user = Auth::user();
             $query->whereHas('store', function ($q) use ($user) {
                 $q->where('university_id', $user->university_id);
+            });
+        }
+
+        if ($onlyFoods) {
+            $query->whereHas('category', function ($q) {
+                $q->whereIn('name', ['Food', 'Drinks']); // <-- You can also use category IDs if you prefer
             });
         }
 
@@ -34,6 +40,24 @@ class ProductService
             $query->where('price', '<=', $filters['max_price']);
         }
 
-        return $query->latest()->paginate(20);
+        // Sorting
+        if (!empty($filters['sort'])) {
+            switch ($filters['sort']) {
+                case 'price_low':
+                    $query->orderBy('price', 'asc');
+                    break;
+                case 'price_high':
+                    $query->orderBy('price', 'desc');
+                    break;
+                case 'latest':
+                default:
+                    $query->latest();
+                    break;
+            }
+        } else {
+            $query->latest();
+        }
+
+        return $query->paginate(20);
     }
 }
