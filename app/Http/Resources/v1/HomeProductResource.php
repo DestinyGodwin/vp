@@ -3,6 +3,7 @@
 namespace App\Http\Resources\v1;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\v1\ImageResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class HomeProductResource extends JsonResource
@@ -20,9 +21,8 @@ class HomeProductResource extends JsonResource
             'description' => $this->description,
             'price' => $this->price,
             'category' => $this->category->name ?? null,
-          'images' => $this->images->map(function ($image) {
-    return url('storage/' . $image->image_path);
-}),
+            'images' => ImageResource::collection($this->images),
+
             'created_at' => $this->created_at->toDateTimeString(),
         ];
     }
