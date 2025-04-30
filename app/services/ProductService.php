@@ -60,4 +60,8 @@ class ProductService
 
         return $query->paginate(20);
     }
+    public function findById(string $id): ?Product
+    {
+        return Product::with(['store.university', 'store.user', 'images', 'category'])->findOrFail($id);
+    }
 }
