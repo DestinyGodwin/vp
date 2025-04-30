@@ -19,6 +19,9 @@ Route::apiResource('stores', StoreController::class)->only(['index', 'show']);
 Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
 Route::apiResource('products', ProductController::class)->only(['index', 'show']);
 Route::get('home', [HomeController::class, 'index']);
+Route::get('/home/products', [HomeController::class, 'index']);
+Route::get('/home/foods', [HomeController::class, 'foods']);
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('universities', UniversityController::class)->only(['store', 'update', 'destroy']);
