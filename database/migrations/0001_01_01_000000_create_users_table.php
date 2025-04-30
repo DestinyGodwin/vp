@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('phone')->unique();
             $table->string('email')->unique();
+            $table->string('profile_picture')->nullable();
             $table->foreignUuid('university_id');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
