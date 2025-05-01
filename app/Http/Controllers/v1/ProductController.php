@@ -39,7 +39,7 @@ class ProductController extends Controller
             return response()->json(['message' => 'No store found for user.'], 403);
         }
 
-        $product = $store->products()->create($request->only(['name', 'description', 'price', 'category_id']));
+        $product = $store->products()->create($request->only(['name', 'description', 'price',  'category_id']));
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
