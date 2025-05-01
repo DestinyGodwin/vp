@@ -61,4 +61,28 @@ class ProductController extends Controller
         $this->productService->delete($id);
         return response()->json(['message' => 'Product deleted.']);
     }
+    public function productsByCategory(string $name)
+{
+    $products = $this->productService->getByCategoryName($name);
+    return ProductResource::collection($products);
+}
+
+public function productsByStore(string $storeId)
+{
+    $products = $this->productService->getByStore($storeId);
+    return ProductResource::collection($products);
+}
+
+public function productsByUniversity(string $universityId)
+{
+    $products = $this->productService->getByUniversity($universityId);
+    return ProductResource::collection($products);
+}
+
+public function productsByCountry(string $country)
+{
+    $products = $this->productService->getByCountry($country);
+    return ProductResource::collection($products);
+}
+
 }
