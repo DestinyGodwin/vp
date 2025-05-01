@@ -5,10 +5,17 @@ namespace App\Http\Controllers\v1;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\ProductService;
+use App\Http\Resources\v1\ProductResource;
+
 use App\Http\Requests\v1\products\StoreProductRequest;
 
 class ProductController extends Controller
 {
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
     public function index(Request $request)
     {
         $universityId = $request->query('university_id');
@@ -47,9 +54,10 @@ class ProductController extends Controller
         return response()->json(['message' => 'Product created.', 'product' => $product->load('images')]);
     }
 
-    public function show(Product $product)
+    public function show(string $id)
     {
-        return response()->json($product->load('store.university', 'images'));
+        $product = $this->productService->findById($id);
+        return new ProductResource($product);
     }
 
     public function update(StoreProductRequest $request, Product $product)

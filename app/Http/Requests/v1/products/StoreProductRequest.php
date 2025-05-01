@@ -27,7 +27,7 @@ class StoreProductRequest extends FormRequest
             'price' => ['required', 'numeric', 'min:0'],
             'category_id' => ['required', 'exists:categories,id'],
             'images' => ['required', 'array', 'min:1'],
-            'images.*' => ['required','image', 'mimes:jpeg,jpg,png,gif,webp','max:2048' ],         
+            'images.*' => ['required','image', 'mimes:jpeg,jpg,png,gif,webp,avif','max:2048' ],         
         ];
     }
     public function messages()

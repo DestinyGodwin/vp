@@ -23,7 +23,7 @@ class CreateStoreRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'in:product,food'],
+            'image' => ['required', 'image', 'mimetypes:image/jpeg,image/png,image/jpg,image/gif', 'max:2048'],
             'description' => ['required', 'string'],
             'university_id' => ['required', 'exists:universities,id'],
         ];
