@@ -1,88 +1,74 @@
 <?php
-
 namespace App\Services;
 
 use App\Models\Product;
-use Illuminate\Http\Request;
+use App\Models\Category;
+use App\Models\Store;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Collection;
 
 class ProductService
 {
-    public function getAll($user): Collection
+    public function getFilteredProducts()
     {
+        $user = Auth::user();
+
+        $excludedCategories = Category::whereIn('name', ['food', 'drinks'])->pluck('id');
+
         $query = Product::with(['store.university', 'store.user', 'images', 'category'])
-            ->where('status', 'active')
-            ->whereHas('store', function ($query) {
-                $query->where('type', '!=', 'food')->where('type', '!=', 'drink');
-            });
+            ->whereNotIn('category_id', $excludedCategories)
+            ->where('status', 'active');
 
         if ($user && $user->university_id) {
-            $query->whereHas('store', function ($q) use ($user) {
-                $q->where('university_id', $user->university_id);
-            });
+            $query->whereHas('store', fn($q) => $q->where('university_id', $user->university_id));
         }
 
-        return $query->latest()->get();
+        $products = $query->paginate(10);
+
+        if ($user && $user->university_id && $products->isEmpty()) {
+            return response()->json([
+                'message' => 'No products from your university yet.'
+            ]);
+        }
+
+        return $products;
     }
 
-    public function findById(string $id): Product
+    public function findById(string $id): ?Product
     {
         return Product::with(['store.university', 'store.user', 'images', 'category'])->findOrFail($id);
     }
 
-    public function create(Request $request): Product
+    public function getByCategoryName(string $name)
     {
-        $user = Auth::user();
-        $store = $user->store;
+        $category = Category::where('name', $name)->firstOrFail();
 
-        if (!$store) {
-            abort(403, 'No store found for user.');
-        }
-
-        $product = $store->products()->create($request->only(['name', 'description', 'price', 'category_id']));
-
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('products', 'public');
-                $product->images()->create(['image_path' => $path]);
-            }
-        }
-
-        return $product->load('images');
+        return Product::with(['store.university', 'store.user', 'images', 'category'])
+            ->where('category_id', $category->id)
+            ->where('status', 'active')
+            ->paginate(10);
     }
 
-    public function update(string $id, Request $request): Product
+    public function getByStore(string $storeId)
     {
-        $user = Auth::user();
-        $product = Product::findOrFail($id);
-
-        if ($product->store->user_id !== $user->id) {
-            abort(403, 'Unauthorized.');
-        }
-
-        $product->update($request->only(['name', 'description', 'price', 'category_id']));
-
-        if ($request->hasFile('images')) {
-            $product->images()->delete();
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('products', 'public');
-                $product->images()->create(['image_path' => $path]);
-            }
-        }
-
-        return $product->load('images');
+        return Product::with(['store.university', 'store.user', 'images', 'category'])
+            ->where('store_id', $storeId)
+            ->where('status', 'active')
+            ->paginate(10);
     }
 
-    public function delete(string $id): void
+    public function getByUniversity(string $universityId)
     {
-        $user = Auth::user();
-        $product = Product::findOrFail($id);
+        return Product::with(['store.university', 'store.user', 'images', 'category'])
+            ->whereHas('store', fn($q) => $q->where('university_id', $universityId))
+            ->where('status', 'active')
+            ->paginate(10);
+    }
 
-        if ($product->store->user_id !== $user->id) {
-            abort(403, 'Unauthorized.');
-        }
-
-        $product->delete();
+    public function getByCountry(string $country)
+    {
+        return Product::with(['store.university', 'store.user', 'images', 'category'])
+            ->whereHas('store.university', fn($q) => $q->where('country', $country))
+            ->where('status', 'active')
+            ->paginate(10);
     }
 }
