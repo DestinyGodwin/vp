@@ -2,56 +2,43 @@
 
 namespace App\Http\Controllers\v1;
 
-use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Services\ProductService;
-use App\Http\Resources\v1\ProductResource;
-
 use App\Http\Requests\v1\products\StoreProductRequest;
+use App\Http\Resources\v1\ProductResource;
+use App\Services\ProductService;
 
 class ProductController extends Controller
 {
+    protected ProductService $productService;
+
     public function __construct(ProductService $productService)
     {
         $this->productService = $productService;
     }
+
     public function index(Request $request)
     {
-        $universityId = $request->query('university_id');
+        $user = auth()->user();
+        $products = $this->productService->getAll($user);
 
-        $products = Product::whereHas('store', function ($query) use ($universityId) {
-            $query->where('university_id', $universityId);
-        })
-        ->where('status', 'active')
-        ->with('store.university', 'images')
-        ->paginate(10);
+        if ($user && $products->isEmpty()) {
+            return response()->json([
+                'message' => 'No products available from your university yet.',
+                'products' => [],
+            ], 200);
+        }
 
-        return response()->json($products);
+        return ProductResource::collection($products);
     }
 
     public function store(StoreProductRequest $request)
     {
-        $user = auth()->user();
-        $store = $user->store; 
-
-        if (!$store) {
-            return response()->json(['message' => 'No store found for user.'], 403);
-        }
-
-        $product = $store->products()->create($request->only(['name', 'description', 'price',  'category_id']));
-
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('products', 'public');
-
-                $product->images()->create([
-                    'image_path' => $path,
-                ]);
-            }
-        }
-
-        return response()->json(['message' => 'Product created.', 'product' => $product->load('images')]);
+        $product = $this->productService->create($request);
+        return response()->json([
+            'message' => 'Product created.',
+            'product' => new ProductResource($product),
+        ], 201);
     }
 
     public function show(string $id)
@@ -60,41 +47,18 @@ class ProductController extends Controller
         return new ProductResource($product);
     }
 
-    public function update(StoreProductRequest $request, Product $product)
+    public function update(StoreProductRequest $request, string $id)
     {
-        $user = auth()->user();
-
-        if ($product->store->user_id !== $user->id) {
-            return response()->json(['message' => 'Unauthorized.'], 403);
-        }
-
-        $product->update($request->only(['name', 'description', 'price', 'category_id']));
-
-        if ($request->hasFile('images')) {
-            $product->images()->delete(); // Remove old images
-
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('products', 'public');
-
-                $product->images()->create([
-                    'image_path' => $path,
-                ]);
-            }
-        }
-
-        return response()->json(['message' => 'Product updated.', 'product' => $product->load('images')]);
+        $product = $this->productService->update($id, $request);
+        return response()->json([
+            'message' => 'Product updated.',
+            'product' => new ProductResource($product),
+        ]);
     }
 
-    public function destroy(Product $product)
+    public function destroy(string $id)
     {
-        $user = auth()->user();
-
-        if ($product->store->user_id !== $user->id) {
-            return response()->json(['message' => 'Unauthorized.'], 403);
-        }
-
-        $product->delete();
-
+        $this->productService->delete($id);
         return response()->json(['message' => 'Product deleted.']);
     }
 }
